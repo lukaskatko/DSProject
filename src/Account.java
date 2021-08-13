@@ -5,9 +5,9 @@ import java.sql.Date;
  * POJO for transaction
  *
  */
-public class Transaction {
+public class Account {
 
-	private Integer transactionId;
+	private Integer accountId;
 
 	private Double balance;
 
@@ -19,7 +19,7 @@ public class Transaction {
 
 	private Date createDate;
 
-	public Transaction() {
+	public Account() {
 
 	}
 
@@ -27,14 +27,14 @@ public class Transaction {
 	 * @return the transactionId
 	 */
 	public Integer getTransactionId() {
-		return transactionId;
+		return accountId;
 	}
 
 	/**
 	 * @param transactionId the transactionId to set
 	 */
 	public void setTransactionId(Integer transactionId) {
-		this.transactionId = transactionId;
+		this.accountId = transactionId;
 	}
 
 	/**

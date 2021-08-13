@@ -4,11 +4,11 @@
  * user.
  *
  */
-public interface TransactionDao {
+public interface AccountDao {
 
 	boolean deposit(String accountNumber, double balance);
 	
 	double withDraw(String accountNumber, double balance);
 	
-	Transaction getBalance(String accountNumber);
+	Account getBalance(String accountNumber);
 }
