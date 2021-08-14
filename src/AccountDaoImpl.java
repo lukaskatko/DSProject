@@ -12,9 +12,11 @@ import java.sql.Statement;
  */
 public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	int connectionNum;
-	protected AccountDaoImpl(int connection) throws RemoteException {
+	int portNumber;
+	protected AccountDaoImpl(int connection, int portNumber) throws RemoteException {
 		
 		super();
+		this.portNumber = portNumber;
 		connectionNum = connection;
 	}
 
