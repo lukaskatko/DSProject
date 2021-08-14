@@ -15,7 +15,8 @@ public class Client {
 		Menu menu = new Menu();
 		System.out.println(menu.menu());
 		
-		//CONNECTION TO SERVERS TO BE IMPLEMENTED
+		//CONNECTION TO SERVERS TO BE IMPLEMENTED HERE /////
+		///////////////////////////////////////////////////
 		
 		
 		Scanner sc = new Scanner(System.in);
@@ -42,6 +43,7 @@ public class Client {
         		String last = sc.nextLine();
         		
         		//PUT FIRST and LAST name into DB // GET BACK ACCOUNT NUMBER
+        		///////////////////////////////////////////////////
         		
         	}
         	if (command == 2) {
@@ -54,7 +56,9 @@ public class Client {
         		System.out.print("Please enter Account Number:");
         		String acctNum = sc.nextLine();
         		
-        		//GET BALANCE FROM HERE
+        		//LOGIC CHECK HERE TO SEE IF FIRST/LAST/ACCTNUM MATCH A ROW IN DB ///
+        		//GET BALANCE FROM HERE /////////////////////////////
+        		///////////////////////////////////////////////////
         	}
         	if (command == 3) {
         		input = "";
@@ -67,6 +71,7 @@ public class Client {
         		String acctNum = sc.nextLine();
         		
         		//LOGIC CHECK HERE TO SEE IF FIRST/LAST/ACCTNUM MATCH A ROW IN DB ///
+        		///////////////////////////////////////////////////
         		
         		System.out.println("Please enter Amount to withdraw:");
         		double withdrawAmount = 0;
@@ -85,6 +90,7 @@ public class Client {
         		}
         		
         		//////////WITHDRAW LOGIC HERE ///////
+        		///////////////////////////////////////////////////
         		
         		
         
@@ -100,6 +106,7 @@ public class Client {
         		String acctNum = sc.nextLine();
         		
         		//LOGIC CHECK HERE TO SEE IF FIRST/LAST/ACCTNUM MATCH A ROW IN DB ///
+        		///////////////////////////////////////////////////
         		
         		System.out.println("Please enter Amount to deposit:");
         		double depositAmount = 0;
@@ -118,6 +125,7 @@ public class Client {
         		}
         		
         		//////////DEPOSIT LOGIC HERE ///////
+        		///////////////////////////////////////////////////
 
         	}
         	if (command == 5) {
