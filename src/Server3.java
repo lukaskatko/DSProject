@@ -8,42 +8,41 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 
-
-
 /**
- * Java RMI server, creating the local host server on port 8001 with name Server1.
+ * Java RMI server, creating the local host server on port 8001 with name
+ * Server1.
  * 
  *
  */
-public class Server3 extends java.rmi.server.UnicastRemoteObject  {
+public class Server3 {
 	public final int serverNumber;
 	public final int portNumber;
 
+	public Server3() throws RemoteException {
+		serverNumber = 3;
+		portNumber = 8003;
+	}
 
-  public Server3() throws RemoteException {
-	  serverNumber = 3;
-	  portNumber = 8003;
-  }
-	
-  public Integer getServerNum() {
-	  return serverNumber;
-  }
+	public Integer getServerNum() {
+		return serverNumber;
+	}
 
-  public int getPortNum() {
-	  return portNumber;
-  }
-  
-  public static void main(String args[]) throws RemoteException {
-	    try {
-	    	Server3 server = new Server3(); 
+	public int getPortNum() {
+		return portNumber;
+	}
 
-	        java.rmi.registry.LocateRegistry.createRegistry(8003);
-	        Naming.rebind("rmi://localhost:8003/Server3", server);
-	        
-	      } catch (Exception e) {
-	        System.out.println("Trouble: " + e);
-	      }
+	public static void main(String args[]) throws RemoteException {
+		try {
+			AccountDao server = new AccountDaoImpl(3);
+			Util util = new Util();
+			int port = Integer.parseInt(util.getPropValue().get("Server3"));
+			java.rmi.registry.LocateRegistry.createRegistry(port);
+			Naming.rebind("Server3", server);
 
-    System.out.println("Server 3 waiting.");
-  }
+		} catch (Exception e) {
+			System.out.println("Trouble: " + e);
+		}
+
+		System.out.println("Server 1 waiting.");
+	}
 }

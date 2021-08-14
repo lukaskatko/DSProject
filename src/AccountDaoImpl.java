@@ -1,3 +1,5 @@
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,29 +10,34 @@ import java.sql.Statement;
  * Account Implementation for CRUD operations.
  *
  */
-public class AccountDaoImpl implements AccountDao {
+public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
+	int connectionNum;
+	protected AccountDaoImpl(int connection) throws RemoteException {
+		
+		super();
+		connectionNum = connection;
+	}
 
 	@Override
-	public boolean deposit(String accountNumber, double balance, String serverNum) {
-		Connection connection = ConnectionFactory.getConnection(serverNum);
+	public boolean deposit(String accountNumber, double balance) throws RemoteException{
+		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
 		boolean flag = false;
-		Account account = getBalance(accountNumber, serverNum);
+		Account account = getBalance(accountNumber);
 		if (account == null) {
-			flag = insertBalance(account, connection, serverNum);
+			flag = insertBalance(account, connection,connectionNum);
 		} else {
-			flag = updateBalance(account, balance, connection, true, serverNum);
+			flag = updateBalance(account, balance, connection, true,connectionNum);
 		}
 		return flag;
 	}
 
-	private boolean insertBalance(Account account, Connection connection, String serverNum) {
+	private boolean insertBalance(Account account, Connection connection, int number) {
 
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
-		String server = "cs6650_" + serverNum;
 		try {
 			PreparedStatement ps = connection.prepareStatement(
-					"INSERT INTO" + server + ".Account (balance,account_number,first_name,last_name,update_date VALUES (?, ?, ?,?,?)");
+					"INSERT INTO cs6650_"+number+".account (balance,account_number,first_name,last_name,update_date VALUES (?, ?, ?,?,?)");
 			ps.setDouble(1, account.getBalance());
 			ps.setNString(2, account.getAccountNumber());
 			ps.setString(3, account.getFirstName());
@@ -49,7 +56,7 @@ public class AccountDaoImpl implements AccountDao {
 		return false;
 	}
 
-	private boolean updateBalance(Account account, double balance, Connection connection, boolean flag, String serverNum) {
+	private boolean updateBalance(Account account, double balance, Connection connection, boolean flag, int number) {
 
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
@@ -59,10 +66,9 @@ public class AccountDaoImpl implements AccountDao {
 		} else {
 			bal = account.getBalance().doubleValue() - balance;
 		}
-		String server = "cs6650_" + serverNum;
 		try {
 			PreparedStatement ps = connection.prepareStatement(
-					"Update" + server + ".Account set balance = ? update_date =? where account_number = ?");
+					"Update cs6650_"+number+".account set balance = ? update_date =? where account_number = ?");
 			ps.setDouble(1, bal);
 			ps.setDate(2, date);
 			ps.setNString(3, account.getAccountNumber());
@@ -81,27 +87,26 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public double withDraw(String accountNumber, double balance, String serverNum) {
-		Connection connection = ConnectionFactory.getConnection(serverNum);		
-		Account account = getBalance(accountNumber, serverNum);
+	public double withDraw(String accountNumber, double balance) {
+		Connection connection = ConnectionFactory.getConnection(connectionNum+"");	
+		Account account = getBalance(accountNumber);
 		if (account == null) {
 			return 0.0;
 		} else {
-			updateBalance(account, balance, connection, false, serverNum);
+			updateBalance(account, balance, connection, false,connectionNum);
 		}
-		account = getBalance(accountNumber, serverNum);
+		account = getBalance(accountNumber);
 		return account.getBalance();
 	}
 
 	@Override
-	public Account getBalance(String accountNumber, String serverNum) {
-		Connection connection = ConnectionFactory.getConnection(serverNum);
+	public Account getBalance(String accountNumber) {
+		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
 		Account account = null;
 		Statement stmt = null;
-		String server = "cs6650_" + serverNum;
 		try {
 			stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM" + server + ".Account WHERE account_number=" + accountNumber);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM cs6650.Account WHERE account_number=" + accountNumber);
 
 			if (rs.next()) {
 				account = new Account();

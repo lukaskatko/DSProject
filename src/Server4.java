@@ -1,12 +1,5 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.net.MalformedURLException;
 import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.HashMap;
 
 
 
@@ -15,7 +8,7 @@ import java.util.HashMap;
  * 
  *
  */
-public class Server4 extends java.rmi.server.UnicastRemoteObject  {
+public class Server4 {
 	public final int serverNumber;
 	public final int portNumber;
 
@@ -34,16 +27,17 @@ public class Server4 extends java.rmi.server.UnicastRemoteObject  {
   }
 
   public static void main(String args[]) throws RemoteException {
-	    try {
-	    	Server4 server = new Server4(); 
+		try {
+			AccountDao server = new AccountDaoImpl(3);
+			Util util = new Util();
+			int port = Integer.parseInt(util.getPropValue().get("Server4"));
+			java.rmi.registry.LocateRegistry.createRegistry(port);
+			Naming.rebind("Server4", server);
 
-	        java.rmi.registry.LocateRegistry.createRegistry(8004);
-	        Naming.rebind("rmi://localhost:8004/Server4", server);
-	        
-	      } catch (Exception e) {
-	        System.out.println("Trouble: " + e);
-	      }
+		} catch (Exception e) {
+			System.out.println("Trouble: " + e);
+		}
 
-    System.out.println("Server 4 waiting.");
-  }
+		System.out.println("Server 1 waiting.");
+	}
 }
