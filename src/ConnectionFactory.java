@@ -19,7 +19,7 @@ public class ConnectionFactory {
     public static Connection getConnection(String serverNum)
     {
       try {
-    	  URL = URL + "-" + serverNum;
+    	  URL = URL + "_" + serverNum;
           return DriverManager.getConnection(URL, USER, PASS);
       } catch (SQLException ex) {
           throw new RuntimeException("Error connecting to the database", ex);
