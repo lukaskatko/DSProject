@@ -1,4 +1,3 @@
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -11,28 +10,14 @@ import java.rmi.registry.Registry;
  *
  */
 public class Server4 {
-	public final int serverNumber;
-	public final int portNumber;
-
-
-  public Server4() throws RemoteException {
-	  serverNumber = 4;
-	  portNumber = 8004;
-  }
 	
-  public Integer getServerNum() {
-	  return serverNumber;
-  }
-  
-  public int getPortNum() {
-	  return portNumber;
-  }
 
   public static void main(String args[]) throws RemoteException {
 		try {
-			AccountDao server = new AccountDaoImpl(3);
 			Util util = new Util();
 			int port = Integer.parseInt(util.getPropValue().get("Server4"));
+			AccountDao server = new AccountDaoImpl(3,port);
+			
 			Registry registry = LocateRegistry.createRegistry(port);
 			registry.bind("Server4", server);	
 

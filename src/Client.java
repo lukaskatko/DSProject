@@ -1,10 +1,11 @@
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.ServerNotActiveException;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.Map;
 import java.util.Scanner;
 
 
@@ -12,9 +13,18 @@ import java.util.Scanner;
 public class Client {
 	
 	public static void main(String[] args) throws ServerNotActiveException, InterruptedException, SocketTimeoutException, MalformedURLException, RemoteException, NotBoundException {
+		Registry registry = LocateRegistry.getRegistry("localhost", 2011);
+		RoundRobinInterface server = (RoundRobinInterface) registry.lookup("loadbalancer");
+		String serverName = server.getServer();
+		Util util = new Util();
+		Map<String, String> serverDetails = util.getPropValue();
+		String serverPort= serverDetails.get(serverName);
+		System.out.println(serverPort);
 		Menu menu = new Menu();
 		System.out.println(menu.menu());
-		
+		Registry serverRegistry = LocateRegistry.getRegistry("localhost", Integer.parseInt(serverPort));
+		AccountDao accountDao = (AccountDao)serverRegistry.lookup(serverName);
+		System.out.println(accountDao.hashCode());
 		//CONNECTION TO SERVERS TO BE IMPLEMENTED HERE /////
 		///////////////////////////////////////////////////
 		
