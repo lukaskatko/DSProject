@@ -27,9 +27,10 @@ public class AccountDaoImpl implements AccountDao {
 
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
+		String server = "cs6650-" + serverNum;
 		try {
 			PreparedStatement ps = connection.prepareStatement(
-					"INSERT INTO cs6650.Account (balance,account_number,first_name,last_name,update_date VALUES (?, ?, ?,?,?)");
+					"INSERT INTO" + server + ".Account (balance,account_number,first_name,last_name,update_date VALUES (?, ?, ?,?,?)");
 			ps.setDouble(1, account.getBalance());
 			ps.setNString(2, account.getAccountNumber());
 			ps.setString(3, account.getFirstName());
@@ -58,9 +59,10 @@ public class AccountDaoImpl implements AccountDao {
 		} else {
 			bal = account.getBalance().doubleValue() - balance;
 		}
+		String server = "cs6650-" + serverNum;
 		try {
 			PreparedStatement ps = connection.prepareStatement(
-					"Update cs6650.Account set balance = ? update_date =? where account_number = ?");
+					"Update" + server + ".Account set balance = ? update_date =? where account_number = ?");
 			ps.setDouble(1, bal);
 			ps.setDate(2, date);
 			ps.setNString(3, account.getAccountNumber());
@@ -96,9 +98,10 @@ public class AccountDaoImpl implements AccountDao {
 		Connection connection = ConnectionFactory.getConnection(serverNum);
 		Account account = null;
 		Statement stmt = null;
+		String server = "cs6650-" + serverNum;
 		try {
 			stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM cs6650.Account WHERE account_number=" + accountNumber);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM" + server + ".Account WHERE account_number=" + accountNumber);
 
 			if (rs.next()) {
 				account = new Account();
