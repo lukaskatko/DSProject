@@ -1,11 +1,21 @@
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class RoundRobin extends Thread {
-	private static Integer pos = 0;	
-	public static String getServer() {
+public class RoundRobin extends UnicastRemoteObject implements RoundRobinInterface {
+	
+	protected RoundRobin() throws RemoteException {
+		super();
+
+	}
+
+	private static Integer pos = 0;
+
+	@Override
+	public String getServer() throws RemoteException {
 		Map<String, String> serverMap = new HashMap<String, String>();
 		Util server = new Util();
 		serverMap.putAll(server.getPropValue());
@@ -16,7 +26,7 @@ public class RoundRobin extends Thread {
 
 		String currentServer = null;
 		synchronized (pos) {
-			if (pos > keySet.size())
+			if (pos >= keySet.size())
 				pos = 0;
 			currentServer = keyList.get(pos);
 			pos++;
@@ -24,4 +34,5 @@ public class RoundRobin extends Thread {
 
 		return currentServer;
 	}
+
 }
