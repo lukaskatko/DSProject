@@ -27,7 +27,7 @@ public class AccountDaoImpl implements AccountDao {
 
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
-		String server = "cs6650-" + serverNum;
+		String server = "cs6650_" + serverNum;
 		try {
 			PreparedStatement ps = connection.prepareStatement(
 					"INSERT INTO" + server + ".Account (balance,account_number,first_name,last_name,update_date VALUES (?, ?, ?,?,?)");
@@ -59,7 +59,7 @@ public class AccountDaoImpl implements AccountDao {
 		} else {
 			bal = account.getBalance().doubleValue() - balance;
 		}
-		String server = "cs6650-" + serverNum;
+		String server = "cs6650_" + serverNum;
 		try {
 			PreparedStatement ps = connection.prepareStatement(
 					"Update" + server + ".Account set balance = ? update_date =? where account_number = ?");
@@ -98,7 +98,7 @@ public class AccountDaoImpl implements AccountDao {
 		Connection connection = ConnectionFactory.getConnection(serverNum);
 		Account account = null;
 		Statement stmt = null;
-		String server = "cs6650-" + serverNum;
+		String server = "cs6650_" + serverNum;
 		try {
 			stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM" + server + ".Account WHERE account_number=" + accountNumber);
