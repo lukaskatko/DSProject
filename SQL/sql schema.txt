@@ -1,0 +1,76 @@
+create schema if not exists cs6650_1;
+use cs6650_1;
+DROP TABLE IF EXISTS `account`;
+
+CREATE TABLE IF NOT EXISTS `account` (
+  `account_id` int NOT NULL AUTO_INCREMENT,
+  `balance` decimal(12,2) NOT NULL, 
+  `account_number` varchar(25) NOT NULL,
+  first_name varchar(50) NOT NULL,
+  last_name varchar(50) NOT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (account_number),
+  PRIMARY KEY (`account_id`)  
+);
+
+create schema if not exists cs6650_2;
+use cs6650_2;
+DROP TABLE IF EXISTS `account`;
+
+CREATE TABLE IF NOT EXISTS `account` (
+  `account_id` int NOT NULL AUTO_INCREMENT,
+  `balance` decimal(12,2) NOT NULL, 
+  `account_number` varchar(25) NOT NULL,
+  first_name varchar(50) NOT NULL,
+  last_name varchar(50) NOT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (account_number),
+  PRIMARY KEY (`account_id`)  
+);
+
+create schema if not exists cs6650_3;
+use cs6650_3;
+DROP TABLE IF EXISTS `account`;
+
+CREATE TABLE IF NOT EXISTS `account` (
+  `account_id` int NOT NULL AUTO_INCREMENT,
+  `balance` decimal(12,2) NOT NULL, 
+  `account_number` varchar(25) NOT NULL,
+  first_name varchar(50) NOT NULL,
+  last_name varchar(50) NOT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (account_number),
+  PRIMARY KEY (`account_id`)  
+);
+
+create schema if not exists cs6650_4;
+use cs6650_4;
+DROP TABLE IF EXISTS `account`;
+
+CREATE TABLE IF NOT EXISTS `account` (
+  `account_id` int NOT NULL AUTO_INCREMENT,
+  `balance` decimal(12,2) NOT NULL, 
+  `account_number` varchar(25) NOT NULL,
+  first_name varchar(50) NOT NULL,
+  last_name varchar(50) NOT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (account_number),
+  PRIMARY KEY (`account_id`)  
+);
+
+create schema if not exists cs6650_5;
+use cs6650_5;
+DROP TABLE IF EXISTS `account`;
+
+CREATE TABLE IF NOT EXISTS `account` (
+  `account_id` int NOT NULL AUTO_INCREMENT,
+  `balance` decimal(12,2) NOT NULL, 
+  `account_number` varchar(25) NOT NULL,
+  first_name varchar(50) NOT NULL,
+  last_name varchar(50) NOT NULL,
+  `update_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE (account_number),
+  PRIMARY KEY (`account_id`)  
+);
+
+SELECT * FROM account
