@@ -11,19 +11,19 @@ import java.sql.Statement;
 public class AccountDaoImpl implements AccountDao {
 
 	@Override
-	public boolean deposit(String accountNumber, double balance) {
-		Connection connection = ConnectionFactory.getConnection();
+	public boolean deposit(String accountNumber, double balance, String serverNum) {
+		Connection connection = ConnectionFactory.getConnection(serverNum);
 		boolean flag = false;
-		Account account = getBalance(accountNumber);
+		Account account = getBalance(accountNumber, serverNum);
 		if (account == null) {
-			flag = insertBalance(account, connection);
+			flag = insertBalance(account, connection, serverNum);
 		} else {
-			flag = updateBalance(account, balance, connection, true);
+			flag = updateBalance(account, balance, connection, true, serverNum);
 		}
 		return flag;
 	}
 
-	private boolean insertBalance(Account account, Connection connection) {
+	private boolean insertBalance(Account account, Connection connection, String serverNum) {
 
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
@@ -48,7 +48,7 @@ public class AccountDaoImpl implements AccountDao {
 		return false;
 	}
 
-	private boolean updateBalance(Account account, double balance, Connection connection, boolean flag) {
+	private boolean updateBalance(Account account, double balance, Connection connection, boolean flag, String serverNum) {
 
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
@@ -79,21 +79,21 @@ public class AccountDaoImpl implements AccountDao {
 	}
 
 	@Override
-	public double withDraw(String accountNumber, double balance) {
-		Connection connection = ConnectionFactory.getConnection();		
-		Account account = getBalance(accountNumber);
+	public double withDraw(String accountNumber, double balance, String serverNum) {
+		Connection connection = ConnectionFactory.getConnection(serverNum);		
+		Account account = getBalance(accountNumber, serverNum);
 		if (account == null) {
 			return 0.0;
 		} else {
-			updateBalance(account, balance, connection, false);
+			updateBalance(account, balance, connection, false, serverNum);
 		}
-		account = getBalance(accountNumber);
+		account = getBalance(accountNumber, serverNum);
 		return account.getBalance();
 	}
 
 	@Override
-	public Account getBalance(String accountNumber) {
-		Connection connection = ConnectionFactory.getConnection();
+	public Account getBalance(String accountNumber, String serverNum) {
+		Connection connection = ConnectionFactory.getConnection(serverNum);
 		Account account = null;
 		Statement stmt = null;
 		try {

@@ -6,9 +6,9 @@
  */
 public interface AccountDao {
 
-	boolean deposit(String accountNumber, double balance);
+	boolean deposit(String accountNumber, double balance, String serverNum);
 	
-	double withDraw(String accountNumber, double balance);
+	double withDraw(String accountNumber, double balance, String serverNum);
 	
-	Account getBalance(String accountNumber);
+	Account getBalance(String accountNumber, String serverNum);
 }
