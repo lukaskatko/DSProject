@@ -1,5 +1,7 @@
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 
 
@@ -31,8 +33,8 @@ public class Server4 {
 			AccountDao server = new AccountDaoImpl(3);
 			Util util = new Util();
 			int port = Integer.parseInt(util.getPropValue().get("Server4"));
-			java.rmi.registry.LocateRegistry.createRegistry(port);
-			Naming.rebind("Server4", server);
+			Registry registry = LocateRegistry.createRegistry(port);
+			registry.bind("Server4", server);	
 
 		} catch (Exception e) {
 			System.out.println("Trouble: " + e);

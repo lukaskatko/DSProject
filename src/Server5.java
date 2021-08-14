@@ -6,6 +6,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashMap;
 
 /**
@@ -36,8 +38,8 @@ public class Server5 {
 			AccountDao server = new AccountDaoImpl(5);
 			Util util = new Util();
 			int port = Integer.parseInt(util.getPropValue().get("Server5"));
-			java.rmi.registry.LocateRegistry.createRegistry(port);
-			Naming.rebind("Server5", server);
+			Registry registry = LocateRegistry.createRegistry(port);
+			registry.bind("Server5", server);	
 
 		} catch (Exception e) {
 			System.out.println("Trouble: " + e);
