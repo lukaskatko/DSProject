@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Java RMI server, creating the local host server on port 8001 with name
- * Server1.
+ * Java RMI server, creating the local host server on port 8003 with name
+ * Server3.
  * 
  *
  */

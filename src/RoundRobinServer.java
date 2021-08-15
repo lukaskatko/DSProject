@@ -1,6 +1,11 @@
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/**
+ * Load balancing server on port 2011.
+ * @author alitz
+ *
+ */
 public class RoundRobinServer {
 
 	public static void main(String[] args) {

@@ -1,4 +1,8 @@
-
+/**
+ * Parser for the Client, makes sure client can only successfully enter 1-5 for commands.
+ * @author alitz
+ *
+ */
 public class Parser {
 	
 	public Integer Parse(String command) {
@@ -16,7 +20,6 @@ public class Parser {
 			System.out.println("Command must be an integer between 1 and 5");
 			return 0;
 		}
-	
 	}
 	
 

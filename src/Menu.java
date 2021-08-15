@@ -1,9 +1,13 @@
-
+/**
+ * Text based menu of services for the application.
+ * @author alitz
+ *
+ */
 public class Menu {
 	public String menu() {
 		return "Welcome to the Transaction Manager\n"
 				+ "----------------------------------\n"
-				+ "Please enter 1-4 to access the following commands:\n"
+				+ "Please enter 1-5 to access the following commands:\n"
 				+ "1: Create Account\n"
 				+ "2: Get Balance\n"
 				+ "3: Withdraw Funds\n"
