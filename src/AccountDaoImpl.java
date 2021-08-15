@@ -29,7 +29,7 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 		Coordinator ct = new Coordinator();
 		List<Integer> ackList;
 		ackList = ct.publishToOtherServers(portNumber);
-		if (ackList.size() >= 2) {
+		if (ackList.size() >= 3) {
 			System.out.println((ackList.size() + 1) + "servers in consensus. Proceeding with commit");
 		}
 
