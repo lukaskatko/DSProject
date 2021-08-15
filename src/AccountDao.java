@@ -10,6 +10,8 @@ import java.rmi.RemoteException;
 public interface AccountDao extends Remote {
 
 	long createUser(String firstName, String lastName, String userName) throws RemoteException;
+	
+	long createUserFor2PC(String firstName, String lastName, String userName) throws RemoteException;
 
 	boolean deposit(long accountNumber, String userName, double amount) throws RemoteException;
 

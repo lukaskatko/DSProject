@@ -14,6 +14,7 @@ import java.util.List;
 public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	int connectionNum;
 	int portNumber;
+
 	protected AccountDaoImpl(int connection, int portNumber) throws RemoteException {
 		super();
 		this.portNumber = portNumber;
@@ -21,48 +22,46 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	}
 
 	@Override
-	public boolean deposit(long accountNumber, String userName, double amount) throws RemoteException{
+	public boolean deposit(long accountNumber, String userName, double amount) throws RemoteException {
 
-		//2pc logic
+		// 2pc logic
 		Coordinator ct = new Coordinator();
 		List<Integer> ackList;
 		ackList = ct.publishToOtherServers(portNumber);
-		if (ackList.size() >= 2) 
-		{
+		if (ackList.size() >= 2) {
 			System.out.println((ackList.size() + 1) + "servers in consensus. Proceeding with commit");
 		}
 
 		ackList = ct.proceedToCommit(portNumber, "D", accountNumber, userName, amount);
-		if (ackList.size() >= 2) 
-		{
+		if (ackList.size() >= 2) {
 			System.out.println("Commit success on " + (ackList.size() + 1) + " servers.");
 		}
 
-		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
 		boolean flag = false;
 		Account account = getBalance(accountNumber, userName);
 		if (account == null) {
 			flag = false;
 		} else {
-			flag = updateBalance(account, amount, connection, true,connectionNum);
+			flag = updateBalance(account, amount, connection, true, connectionNum);
 		}
 		return flag;
 	}
 
-	public boolean depositFor2PC(long accountNumber, String userName, double amount) throws RemoteException
-	{
-		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
+	public boolean depositFor2PC(long accountNumber, String userName, double amount) throws RemoteException {
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
 		boolean flag = false;
 		Account account = getBalance(accountNumber, userName);
 		if (account == null) {
 			flag = false;
 		} else {
-			flag = updateBalance(account, amount, connection, true,connectionNum);
+			flag = updateBalance(account, amount, connection, true, connectionNum);
 		}
 		return flag;
 	}
 
-	private boolean updateBalance(Account account, double balance, Connection connection, boolean flag, int number) throws RemoteException{
+	private boolean updateBalance(Account account, double balance, Connection connection, boolean flag, int number)
+			throws RemoteException {
 
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
@@ -72,11 +71,11 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 		} else {
 			bal = account.getBalance().doubleValue() - balance;
 		}
-		if (bal <0.0)
+		if (bal < 0.0)
 			throw new RemoteException("Insufficient balance to with draw the requested amount " + balance);
 		try {
 			PreparedStatement ps = connection.prepareStatement(
-					"Update cs6650_"+number+".account set balance = ? update_date =? where account_number = ?");
+					"Update cs6650_" + number + ".account set balance = ? update_date =? where account_number = ?");
 			ps.setDouble(1, bal);
 			ps.setDate(2, date);
 			ps.setLong(3, account.getAccountNumber());
@@ -95,42 +94,39 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	}
 
 	@Override
-	public double withDraw(long accountNumber,String userName, double amount) throws RemoteException {
-		//2pc logic
+	public double withDraw(long accountNumber, String userName, double amount) throws RemoteException {
+		// 2pc logic
 		Coordinator ct = new Coordinator();
 		List<Integer> ackList;
 		ackList = ct.publishToOtherServers(portNumber);
-		if (ackList.size() >= 2) 
-		{
+		if (ackList.size() >= 2) {
 			System.out.println((ackList.size() + 1) + "servers in consensus. Proceeding with commit");
 		}
 
 		ackList = ct.proceedToCommit(portNumber, "D", accountNumber, userName, amount);
-		if (ackList.size() >= 2) 
-		{
+		if (ackList.size() >= 2) {
 			System.out.println("Commit success on " + (ackList.size() + 1) + " servers.");
 		}
 
-		Connection connection = ConnectionFactory.getConnection(connectionNum+"");	
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
 		Account account = getBalance(accountNumber, userName);
 		if (account == null) {
 			return 0.0;
 		} else {
-			updateBalance(account, amount, connection, false,connectionNum);
+			updateBalance(account, amount, connection, false, connectionNum);
 		}
 		account = getBalance(accountNumber, userName);
 		return account.getBalance();
 	}
 
 	@Override
-	public double withDrawFor2PC(long accountNumber, String userName, double amount) throws RemoteException
-	{
-		Connection connection = ConnectionFactory.getConnection(connectionNum+"");	
+	public double withDrawFor2PC(long accountNumber, String userName, double amount) throws RemoteException {
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
 		Account account = getBalance(accountNumber, userName);
 		if (account == null) {
 			return 0.0;
 		} else {
-			updateBalance(account, amount, connection, false,connectionNum);
+			updateBalance(account, amount, connection, false, connectionNum);
 		}
 		account = getBalance(accountNumber, userName);
 		return account.getBalance();
@@ -138,12 +134,13 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 
 	@Override
 	public Account getBalance(long accountNumber, String userName) {
-		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
 		Account account = null;
 		Statement stmt = null;
 		try {
 			stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM cs6650_"+connectionNum+".account WHERE account_number='" + accountNumber + "' and user_name = '" + userName +"'");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM cs6650_" + connectionNum + ".account WHERE account_number='"
+					+ accountNumber + "' and user_name = '" + userName + "'");
 
 			if (rs.next()) {
 				account = new Account();
@@ -170,13 +167,54 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 
 	@Override
 	public long createUser(String firstName, String lastName, String userName) throws RemoteException {
-		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
 		try {
-			PreparedStatement ps = connection.prepareStatement(
-					"INSERT INTO cs6650_"+connectionNum+".account (balance,first_name,last_name,user_name,update_date) VALUES (?, ?, ?,?,?)");
-			ps.setDouble(1, 0.0);		
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO cs6650_" + connectionNum
+					+ ".account (balance,first_name,last_name,user_name,update_date) VALUES (?, ?, ?,?,?)");
+			ps.setDouble(1, 0.0);
+			ps.setString(2, firstName);
+			ps.setString(3, lastName);
+			ps.setString(4, userName);
+			ps.setDate(5, date);
+			ps.executeUpdate();
+			Statement stmt = connection.createStatement();
+			System.out.println("SELECT * FROM cs6650_" + connectionNum + ".Account WHERE user_name='" + userName + "'");
+			ResultSet rs = stmt.executeQuery(
+					"SELECT * FROM cs6650_" + connectionNum + ".Account WHERE user_name='" + userName + "'");
+			if (rs.next()) {
+				return rs.getLong("account_number");
+			}
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return 0;
+
+	}
+
+	@Override
+	public long createUserFor2PC(String firstName, String lastName, String userName) throws RemoteException {
+		// 2pc logic
+		Coordinator ct = new Coordinator();
+		List<Integer> ackList;
+		ackList = ct.publishToOtherServers(portNumber);
+		if (ackList.size() >= 2) {
+			System.out.println((ackList.size() + 1) + "servers in consensus. Proceeding with commit");
+		}
+
+		ackList = ct.proceedToCommitUser(portNumber, userName, firstName, lastName);
+		if (ackList.size() >= 2) {
+			System.out.println("Commit success on " + (ackList.size() + 1) + " servers.");
+		}
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
+		long millis = System.currentTimeMillis();
+		java.sql.Date date = new java.sql.Date(millis);
+		try {
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO cs6650_" + connectionNum
+					+ ".account (balance,first_name,last_name,user_name,update_date) VALUES (?, ?, ?,?,?)");
+			ps.setDouble(1, 0.0);
 			ps.setString(2, firstName);
 			ps.setString(3, lastName);
 			ps.setString(4, userName);
@@ -195,6 +233,8 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 		return 0;
 
 	}
+	
+	
 
 	@Override
 	public Integer requestToPublishAtServer()

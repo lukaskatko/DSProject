@@ -190,4 +190,39 @@ public class Coordinator  {
 		}
 		return tempList;
 	}
+	
+	
+	/**
+	 * Method to request other servers to move the client request from temp storage
+	 * to a permanent DB or file. This method returns the port number of the servers
+	 * that moved the client request to permanent storage. These port numbers act as
+	 * a ACK message for the GO message for the server requesting to sync.
+	 * 
+	 * @param currentPort is the port number of the server requesting to commit
+	 * @param message     is the client message
+	 * @return the list of port numbers of the server that succesfully committed.
+	 */
+	public static List<Integer> proceedToCommitUser(int currentPort, String userName, String firstName, String lastName) 
+	{
+		List<Integer> tempList = new ArrayList<Integer>();
+		for (String entry: serverMap.keySet()) 
+		{
+			final int port =  Integer.parseInt(serverMap.get(entry));
+
+			if (port != currentPort)
+			try 
+			{
+				Registry registry = LocateRegistry.getRegistry(port);
+				AccountDao stub = (AccountDao) registry.lookup(entry);
+				
+				stub.createUserFor2PC(firstName, lastName, userName);
+			}
+			catch (Exception e) 
+			{
+				System.out.println("proceedToCommit to other server failed on port " + currentPort);
+				System.out.println(e.getMessage());
+			}
+		}
+		return tempList;
+	}
 }
