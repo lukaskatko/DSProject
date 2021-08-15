@@ -65,14 +65,10 @@ public class Client {
         	}
         	if (command == 3) {
         		input = "";
-        		System.out.println("To withdraw we will need your First name, Last name, and Account number");
-        		System.out.println("Please enter First Name:");
-        		String first = sc.nextLine();
-        		System.out.println("Please enter Last Name:");
-        		String last = sc.nextLine();
+        		System.out.println("To withdraw we will need your Account number and Username");
         		
         		long accountNumber = 0;
-        		while(accountNumber!=0)
+        		while(accountNumber==0)
         		{
         			try
         			{
@@ -114,14 +110,11 @@ public class Client {
         	}
         	if (command == 4) {
         		input = "";
-        		System.out.println("To Deposit we will need your First name, Last name, and Account number");
-        		System.out.println("Please enter First Name:");
-        		String first = sc.nextLine();
-        		System.out.println("Please enter Last Name:");
-        		String last = sc.nextLine();
+        		System.out.println("To Deposit we will need your Account number and Username");
+
         		
         		long accountNumber = 0;
-        		while(accountNumber!=0)
+        		while(accountNumber == 0)
         		{
         			try
         			{
@@ -169,4 +162,3 @@ public class Client {
 	}
 }
    
-

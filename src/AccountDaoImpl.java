@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -75,11 +76,13 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 			throw new RemoteException("Insufficient balance to with draw the requested amount " + balance);
 		try {
 			PreparedStatement ps = connection.prepareStatement(
-					"Update cs6650_" + number + ".account set balance = ? update_date =? where account_number = ?");
-			ps.setDouble(1, bal);
+					"Update cs6650_" + number + ".account SET balance = ?, update_date =? where account_number = ?");
+			//ps.setDouble(1, bal);
+			BigDecimal bd = new BigDecimal(bal);
+			ps.setBigDecimal(1, bd);
 			ps.setDate(2, date);
 			ps.setLong(3, account.getAccountNumber());
-
+			System.out.println(ps);
 			int i = ps.executeUpdate();
 
 			if (i == 1) {
@@ -103,7 +106,7 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 			System.out.println((ackList.size() + 1) + "servers in consensus. Proceeding with commit");
 		}
 
-		ackList = ct.proceedToCommit(portNumber, "D", accountNumber, userName, amount);
+		ackList = ct.proceedToCommit(portNumber, "W", accountNumber, userName, amount);
 		if (ackList.size() >= 2) {
 			System.out.println("Commit success on " + (ackList.size() + 1) + " servers.");
 		}
@@ -166,7 +169,7 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	}
 
 	@Override
-	public long createUser(String firstName, String lastName, String userName) throws RemoteException {
+	public long createUserFor2PC(String firstName, String lastName, String userName) throws RemoteException {
 		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
 		long millis = System.currentTimeMillis();
 		java.sql.Date date = new java.sql.Date(millis);
@@ -195,7 +198,7 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	}
 
 	@Override
-	public long createUserFor2PC(String firstName, String lastName, String userName) throws RemoteException {
+	public long createUser(String firstName, String lastName, String userName) throws RemoteException {
 		// 2pc logic
 		Coordinator ct = new Coordinator();
 		List<Integer> ackList;
