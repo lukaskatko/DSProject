@@ -21,7 +21,12 @@ import java.util.Map.Entry;
  */
 public class Coordinator  {
 
-	static HashMap<String, Integer> serverMap = new HashMap<>();
+	static Map<String, String> serverMap = new HashMap<>();
+	
+	public Coordinator() {
+		Util util = new Util();		
+		serverMap = util.getPropValue();	
+	}
 
 	/**
 	 * driver method to get port and register remote interface to a port.
@@ -31,8 +36,7 @@ public class Coordinator  {
 	 */
 	public static void main(String args[]) throws Exception 
 	{
-		ServerMap serverMapClass = new ServerMap();
-		serverMap = serverMapClass.getServerConfig();	
+		Coordinator ct = new Coordinator();	
 	}
 
 	/**
@@ -51,9 +55,10 @@ public class Coordinator  {
 	public List<Integer> publishToOtherServers(int currentPort) 
 	{
 		List<Integer> tempList = new ArrayList<Integer>();
+		
 		for(String entry: serverMap.keySet())
 		{
-			final int port = serverMap.get(entry);
+			final int port = Integer.parseInt(serverMap.get(entry));
 			if (port != currentPort)
 			{
 				try 
@@ -158,7 +163,7 @@ public class Coordinator  {
 		List<Integer> tempList = new ArrayList<Integer>();
 		for (String entry: serverMap.keySet()) 
 		{
-			final int port = serverMap.get(entry);
+			final int port =  Integer.parseInt(serverMap.get(entry));
 
 			if (port != currentPort)
 			try 
