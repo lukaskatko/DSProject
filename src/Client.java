@@ -70,8 +70,24 @@ public class Client {
         		String first = sc.nextLine();
         		System.out.println("Please enter Last Name:");
         		String last = sc.nextLine();
-        		System.out.println("Please enter Account Number:");
-        		String acctNum = sc.nextLine();
+        		
+        		long accountNumber = 0;
+        		while(accountNumber!=0)
+        		{
+        			try
+        			{
+        				System.out.println("Please enter Account Number:");
+        				accountNumber = Long.parseLong(sc.nextLine());
+        			}
+        			catch(Exception e)
+        			{
+        				System.out.println("Please enter a valid Account Number in number format.");
+        			}
+        		}
+        		
+        		//Not sure if we need first and last name. Username is required to deposit amount.
+        		System.out.print("Please enter User Name:");
+        		String userName = sc.nextLine();
         		
         		//LOGIC CHECK HERE TO SEE IF FIRST/LAST/ACCTNUM MATCH A ROW IN DB ///
         		///////////////////////////////////////////////////
@@ -79,9 +95,8 @@ public class Client {
         		System.out.println("Please enter Amount to withdraw:");
         		double withdrawAmount = 0;
         		while (withdrawAmount == 0) {
-        			acctNum = sc.nextLine();
         			try {
-        				withdrawAmount = Double.parseDouble(acctNum);
+        				withdrawAmount = Double.parseDouble(sc.nextLine());
         				if (withdrawAmount <= 0) {
         					System.out.println("Amount must be positive");
         					withdrawAmount = 0;
@@ -94,9 +109,8 @@ public class Client {
         		
         		//////////WITHDRAW LOGIC HERE ///////
         		///////////////////////////////////////////////////
-        		
-        		
-        
+        		double balance = accountDao.withDraw(accountNumber, userName, withdrawAmount);
+        		System.out.println("Withdraw was " + (balance > 0.0 ? "Successful" : "Unsuccessful"));       		
         	}
         	if (command == 4) {
         		input = "";
@@ -105,8 +119,24 @@ public class Client {
         		String first = sc.nextLine();
         		System.out.println("Please enter Last Name:");
         		String last = sc.nextLine();
-        		System.out.println("Please enter Account Number:");
-        		String acctNum = sc.nextLine();
+        		
+        		long accountNumber = 0;
+        		while(accountNumber!=0)
+        		{
+        			try
+        			{
+        				System.out.println("Please enter Account Number:");
+        				accountNumber = Long.parseLong(sc.nextLine());
+        			}
+        			catch(Exception e)
+        			{
+        				System.out.println("Please enter a valid Account Number in number format.");
+        			}
+        		}
+        		
+        		//Not sure if we need first and last name. Username is required to deposit amount.
+        		System.out.print("Please enter User Name:");
+        		String userName = sc.nextLine();
         		
         		//LOGIC CHECK HERE TO SEE IF FIRST/LAST/ACCTNUM MATCH A ROW IN DB ///
         		///////////////////////////////////////////////////
@@ -114,9 +144,8 @@ public class Client {
         		System.out.println("Please enter Amount to deposit:");
         		double depositAmount = 0;
         		while (depositAmount == 0) {
-        			acctNum = sc.nextLine();
         			try {
-        				depositAmount = Double.parseDouble(acctNum);
+        				depositAmount = Double.parseDouble(sc.nextLine());
         				if (depositAmount <= 0) {
         					System.out.println("Amount must be positive");
         					depositAmount = 0;
@@ -129,7 +158,9 @@ public class Client {
         		
         		//////////DEPOSIT LOGIC HERE ///////
         		///////////////////////////////////////////////////
-
+        		boolean result = accountDao.deposit(accountNumber, userName, depositAmount);
+        		System.out.println("Deposit was " + (result ? "Successful" : "Unsuccessful"));
+        		
         	}
         	if (command == 5) {
         		System.out.println(menu.menu());

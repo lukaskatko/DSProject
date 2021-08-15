@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * Account Implementation for CRUD operations.
@@ -20,19 +21,47 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	}
 
 	@Override
-	public boolean deposit(long accountNumber, String userName, double balance) throws RemoteException{
+	public boolean deposit(long accountNumber, String userName, double amount) throws RemoteException{
+
+		//2pc logic
+		Coordinator ct = new Coordinator();
+		List<Integer> ackList;
+		ackList = ct.publishToOtherServers(portNumber);
+		if (ackList.size() >= 2) 
+		{
+			System.out.println((ackList.size() + 1) + "servers in consensus. Proceeding with commit");
+		}
+
+		ackList = ct.proceedToCommit(portNumber, "D", accountNumber, userName, amount);
+		if (ackList.size() >= 2) 
+		{
+			System.out.println("Commit success on " + (ackList.size() + 1) + " servers.");
+		}
+
 		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
 		boolean flag = false;
 		Account account = getBalance(accountNumber, userName);
 		if (account == null) {
 			flag = false;
 		} else {
-			flag = updateBalance(account, balance, connection, true,connectionNum);
+			flag = updateBalance(account, amount, connection, true,connectionNum);
 		}
 		return flag;
 	}
 
-	
+	public boolean depositFor2PC(long accountNumber, String userName, double amount) throws RemoteException
+	{
+		Connection connection = ConnectionFactory.getConnection(connectionNum+"");
+		boolean flag = false;
+		Account account = getBalance(accountNumber, userName);
+		if (account == null) {
+			flag = false;
+		} else {
+			flag = updateBalance(account, amount, connection, true,connectionNum);
+		}
+		return flag;
+	}
+
 	private boolean updateBalance(Account account, double balance, Connection connection, boolean flag, int number) throws RemoteException{
 
 		long millis = System.currentTimeMillis();
@@ -66,13 +95,42 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 	}
 
 	@Override
-	public double withDraw(long accountNumber,String userName, double balance) throws RemoteException {
+	public double withDraw(long accountNumber,String userName, double amount) throws RemoteException {
+		//2pc logic
+		Coordinator ct = new Coordinator();
+		List<Integer> ackList;
+		ackList = ct.publishToOtherServers(portNumber);
+		if (ackList.size() >= 2) 
+		{
+			System.out.println((ackList.size() + 1) + "servers in consensus. Proceeding with commit");
+		}
+
+		ackList = ct.proceedToCommit(portNumber, "D", accountNumber, userName, amount);
+		if (ackList.size() >= 2) 
+		{
+			System.out.println("Commit success on " + (ackList.size() + 1) + " servers.");
+		}
+
 		Connection connection = ConnectionFactory.getConnection(connectionNum+"");	
 		Account account = getBalance(accountNumber, userName);
 		if (account == null) {
 			return 0.0;
 		} else {
-			updateBalance(account, balance, connection, false,connectionNum);
+			updateBalance(account, amount, connection, false,connectionNum);
+		}
+		account = getBalance(accountNumber, userName);
+		return account.getBalance();
+	}
+
+	@Override
+	public double withDrawFor2PC(long accountNumber, String userName, double amount) throws RemoteException
+	{
+		Connection connection = ConnectionFactory.getConnection(connectionNum+"");	
+		Account account = getBalance(accountNumber, userName);
+		if (account == null) {
+			return 0.0;
+		} else {
+			updateBalance(account, amount, connection, false,connectionNum);
 		}
 		account = getBalance(accountNumber, userName);
 		return account.getBalance();
@@ -138,4 +196,9 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 
 	}
 
+	@Override
+	public Integer requestToPublishAtServer()
+	{
+		return portNumber;
+	}
 }
