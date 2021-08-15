@@ -10,14 +10,14 @@ import java.util.Map;
  * 
  *
  */
-public class Server1 {	
-	
+public class Server1 {
+
 	public static void main(String args[]) throws RemoteException {
 		try {
 			Util util = new Util();
 			int port = Integer.parseInt(util.getPropValue().get("Server1"));
 			AccountDao server = new AccountDaoImpl(1, port);
-			
+
 			Registry registry = LocateRegistry.createRegistry(port);
 			registry.bind("Server1", server);
 			AccountDao nextServer = util.getActiveServer(port);
@@ -29,6 +29,6 @@ public class Server1 {
 		} catch (Exception e) {
 			System.out.println("Trouble: " + e);
 		}
-		
+
 	}
 }
