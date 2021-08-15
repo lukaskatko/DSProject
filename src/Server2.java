@@ -8,8 +8,7 @@ import java.rmi.registry.Registry;
  * 
  *
  */
-public class Server2 {
-	
+public class Server2 {	
 
 	public static void main(String args[]) throws RemoteException {
 		try {

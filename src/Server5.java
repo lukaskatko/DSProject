@@ -24,6 +24,5 @@ public class Server5 {
 			System.out.println("Trouble: " + e);
 		}
 
-		System.out.println("Server 1 waiting.");
 	}
 }

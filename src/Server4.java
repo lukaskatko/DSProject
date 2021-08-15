@@ -9,8 +9,7 @@ import java.rmi.registry.Registry;
  * 
  *
  */
-public class Server4 {
-	
+public class Server4 {	
 
   public static void main(String args[]) throws RemoteException {
 		try {
@@ -25,6 +24,6 @@ public class Server4 {
 			System.out.println("Trouble: " + e);
 		}
 
-		System.out.println("Server 1 waiting.");
+		
 	}
 }

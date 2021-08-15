@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.sql.Date;
 
 /**
@@ -5,13 +6,18 @@ import java.sql.Date;
  * POJO for transaction
  *
  */
-public class Account {
+public class Account implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4091998191215717285L;
 
 	private Integer accountId;
 
 	private Double balance;
 
-	private String accountNumber;
+	private Long accountNumber;
 
 	private String firstName;
 
@@ -54,14 +60,14 @@ public class Account {
 	/**
 	 * @return the accountNumber
 	 */
-	public String getAccountNumber() {
+	public Long getAccountNumber() {
 		return accountNumber;
 	}
 
 	/**
 	 * @param accountNumber the accountNumber to set
 	 */
-	public void setAccountNumber(String accountNumber) {
+	public void setAccountNumber(Long accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 

@@ -10,14 +10,11 @@ import java.rmi.registry.Registry;
  */
 public class Server3 {
 	
-	
-
 	public static void main(String args[]) throws RemoteException {
 		try {
 			Util util = new Util();
 			int port = Integer.parseInt(util.getPropValue().get("Server3"));
-			AccountDao server = new AccountDaoImpl(3,port);
-			
+			AccountDao server = new AccountDaoImpl(3,port);			
 			Registry registry = LocateRegistry.createRegistry(port);
 			registry.bind("Server3", server);	
 
@@ -25,6 +22,6 @@ public class Server3 {
 			System.out.println("Trouble: " + e);
 		}
 
-		System.out.println("Server 1 waiting.");
+		
 	}
 }

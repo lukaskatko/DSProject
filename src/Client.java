@@ -23,12 +23,8 @@ public class Client {
 		Menu menu = new Menu();
 		System.out.println(menu.menu());
 		Registry serverRegistry = LocateRegistry.getRegistry("localhost", Integer.parseInt(serverPort));
-		AccountDao accountDao = (AccountDao)serverRegistry.lookup(serverName);
-		System.out.println(accountDao.hashCode());
-		//CONNECTION TO SERVERS TO BE IMPLEMENTED HERE /////
-		///////////////////////////////////////////////////
-		
-		
+		AccountDao accountDao = (AccountDao)serverRegistry.lookup(serverName);		
+				
 		Scanner sc = new Scanner(System.in);
         String input = "";
         while (!input.toLowerCase().equals("exit")) {
@@ -48,27 +44,24 @@ public class Client {
         		input = "";
         		System.out.print("To create your account, we will need a first and last name");
         		System.out.print("Please enter First Name:");
-        		String first = sc.nextLine();
+        		String firstName = sc.nextLine();
         		System.out.print("Please enter Last Name:");
-        		String last = sc.nextLine();
-        		
-        		//PUT FIRST and LAST name into DB // GET BACK ACCOUNT NUMBER
-        		///////////////////////////////////////////////////
-        		
+        		String lastName = sc.nextLine();
+        		System.out.print("Please enter User Name:");
+        		String userName = sc.nextLine();
+        		long accountNumber = accountDao.createUser(firstName, lastName, userName);
+        		System.out.println("Account number created is " + accountNumber);
         	}
         	if (command == 2) {
         		input = "";
-        		System.out.print("To get your balance, we will need your First name, Last name, and Account number");
-        		System.out.print("Please enter First Name:");
-        		String first = sc.nextLine();
-        		System.out.print("Please enter Last Name:");
-        		String last = sc.nextLine();
+        		System.out.print("To get your balance, we will need your userName and Account number");
+        		System.out.print("Please enter User Name:");
+        		String userName = sc.nextLine();
         		System.out.print("Please enter Account Number:");
         		String acctNum = sc.nextLine();
+        		Account account = accountDao.getBalance(Long.parseLong(acctNum), userName);
+        		System.out.println("Balance for user " + userName +" is " + account.getBalance());
         		
-        		//LOGIC CHECK HERE TO SEE IF FIRST/LAST/ACCTNUM MATCH A ROW IN DB ///
-        		//GET BALANCE FROM HERE /////////////////////////////
-        		///////////////////////////////////////////////////
         	}
         	if (command == 3) {
         		input = "";
