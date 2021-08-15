@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -250,7 +251,7 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 			stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM cs6650_" + connectionNum + ".account");
 
-			if (rs.next()) {
+			while (rs.next()) {
 
 				account = new Account();
 				account.setAccountNumber(rs.getLong("account_number"));

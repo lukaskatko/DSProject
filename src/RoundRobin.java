@@ -1,4 +1,6 @@
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +20,18 @@ public class RoundRobin extends UnicastRemoteObject implements RoundRobinInterfa
 	public String getServer() throws RemoteException {
 		Map<String, String> serverMap = new HashMap<String, String>();
 		Util server = new Util();
-		serverMap.putAll(server.getPropValue());
-
+		for(String entry: server.getPropValue().keySet())
+		{
+			final int port = Integer.parseInt(server.getPropValue().get(entry));			
+			
+			try {
+				Registry registry = LocateRegistry.getRegistry(port);
+				AccountDao account = (AccountDao) registry.lookup(entry);
+				serverMap.put(entry, serverMap.get(entry));
+			}catch (Exception e) {
+				System.out.println("Server is not available " + e.getMessage());
+			}
+		}
 		Set<String> keySet = serverMap.keySet();
 		ArrayList<String> keyList = new ArrayList<String>();
 		keyList.addAll(keySet);
