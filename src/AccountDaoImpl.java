@@ -1,4 +1,3 @@
-import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -6,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Account Implementation for CRUD operations.
@@ -236,12 +238,92 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 		return 0;
 
 	}
-	
-	
 
 	@Override
-	public Integer requestToPublishAtServer()
-	{
+	public Map<Long, Account> getRecords() throws RemoteException {
+
+		Map<Long, Account> accountList = new HashMap<Long, Account>();
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
+		Account account = null;
+		Statement stmt = null;
+		try {
+			stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM cs6650_" + connectionNum + ".account");
+
+			if (rs.next()) {
+
+				account = new Account();
+				account.setAccountNumber(rs.getLong("account_number"));
+				account.setBalance(rs.getDouble("balance"));
+				account.setCreateDate(rs.getDate("update_date"));
+				account.setFirstName(rs.getString("first_name"));
+				account.setLastName(rs.getNString("last_name"));
+				account.setUserName(rs.getNString("user_name"));
+				account.setCreateDate(rs.getDate("update_date"));
+				accountList.put(account.getAccountNumber(), account);
+
+			}
+		} catch (SQLException ex) {
+			System.out.println("exception in getting balance " + ex.getStackTrace());
+		} finally {
+			try {
+				stmt.close();
+				connection.close();
+			} catch (Exception e) {
+
+			}
+		}
+		return accountList;
+
+	}
+
+	@Override
+	public boolean replicateData(List<Account> account) throws RemoteException {
+		Connection connection = ConnectionFactory.getConnection(connectionNum + "");
+		for (Account acc : account) {
+			if (acc.isFlag()) {
+				
+				
+				try {
+					PreparedStatement ps = connection.prepareStatement("INSERT INTO cs6650_" + connectionNum
+							+ ".account (account_number, balance,first_name,last_name,user_name,update_date) VALUES (?,?, ?, ?,?,?)");
+					ps.setLong(1, acc.getAccountNumber());
+					ps.setDouble(2, acc.getBalance());
+					ps.setString(3, acc.getFirstName());
+					ps.setString(4, acc.getLastName());
+					ps.setString(5, acc.getUserName());
+					ps.setDate(6, acc.getCreateDate());
+					ps.executeUpdate();
+				} catch (Exception e) {
+					System.out.println("Insert operation failed during replication for server on port " + this.portNumber);
+					e.printStackTrace();
+					return false;
+				}
+			} else if (!acc.isFlag()) {
+				try {
+				PreparedStatement ps = connection.prepareStatement(
+						"Update cs6650_" + connectionNum + ".account set balance = ?, update_date =? where account_number = ?");
+				ps.setDouble(1, acc.getBalance());
+				ps.setDate(2, acc.getCreateDate());
+				ps.setLong(3, acc.getAccountNumber());
+
+				int i = ps.executeUpdate();
+
+				if (i == 1) {
+					return true;
+				}
+				}catch (Exception e) {
+					System.out.println("Update failed during replication for server on port " + this.portNumber);
+					e.printStackTrace();
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public Integer requestToPublishAtServer() {
 		return portNumber;
 	}
 }

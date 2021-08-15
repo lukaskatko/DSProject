@@ -13,7 +13,15 @@ public class Account implements Serializable{
 	 */
 	private static final long serialVersionUID = -4091998191215717285L;
 
-	private Integer accountId;
+	private String userName;
+	
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 	private Double balance;
 
@@ -24,24 +32,21 @@ public class Account implements Serializable{
 	private String lastName;
 
 	private Date createDate;
+	
+	private boolean flag;
+
+	public boolean isFlag() {
+		return flag;
+	}
+
+	public void setFlag(boolean flag) {
+		this.flag = flag;
+	}
 
 	public Account() {
 
 	}
 
-	/**
-	 * @return the transactionId
-	 */
-	public Integer getTransactionId() {
-		return accountId;
-	}
-
-	/**
-	 * @param transactionId the transactionId to set
-	 */
-	public void setTransactionId(Integer transactionId) {
-		this.accountId = transactionId;
-	}
 
 	/**
 	 * @return the balance
