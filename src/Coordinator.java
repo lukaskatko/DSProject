@@ -4,18 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * 
  * Coordinator to handle server coordination. This class get the ports number
  * from the user to run 4 instances of the server. It sets the ports number of
  * the other servers to each server, this is required to sync the request
- * between servers. This class also handles publishing to other server,
- * publishing to one server in case the initial publish is missed by a
- * particular server. This also handles sending commit to other servers when the
- * initial server issues the command and supports committing to individual
- * server to handle failures.
+ * between servers. This also handles sending commit to other servers when the
+ * initial server issues the command.
  *
  */
 public class Coordinator {
@@ -43,12 +39,11 @@ public class Coordinator {
 	 * client request to a temp storage. Method responds with the port number, these
 	 * are the port numbers of the server that effectively added the client request
 	 * to the temporary storage. These port numbers act as the ACK message for the
-	 * initial request from the requesting server.
+	 * initial request from the requesting server. * @param currentPort, port number
+	 * of the current server.
 	 * 
-	 * @param currentPort, port number of the current server.
-	 * @param message,     client message
 	 * @return the ack message which is the port number of the successful servers
-	 *         that stored the client request in a temp storage.
+	 * 
 	 */
 	public List<Integer> publishToOtherServers(int currentPort) {
 		List<Integer> tempList = new ArrayList<Integer>();
@@ -71,14 +66,17 @@ public class Coordinator {
 	}
 
 	/**
-	 * Method to request other servers to move the client request from temp storage
-	 * to a permanent DB or file. This method returns the port number of the servers
-	 * that moved the client request to permanent storage. These port numbers act as
-	 * a ACK message for the GO message for the server requesting to sync.
 	 * 
-	 * @param currentPort is the port number of the server requesting to commit
-	 * @param message     is the client message
-	 * @return the list of port numbers of the server that succesfully committed.
+	 * Method to request other servers to move the client request from temp storage
+	 * to a permanent DB. These port numbers act as a ACK message for the GO message
+	 * for the server requesting to sync.
+	 * 
+	 * @param currentPort,  port of the current server
+	 * @param action        (withdraw or deposit)
+	 * @param accountNumber
+	 * @param userName
+	 * @param amount
+	 * @return
 	 */
 	public static List<Integer> proceedToCommit(int currentPort, String action, long accountNumber, String userName,
 			Double amount) {
@@ -107,14 +105,15 @@ public class Coordinator {
 	}
 
 	/**
-	 * Method to request other servers to move the client request from temp storage
-	 * to a permanent DB or file. This method returns the port number of the servers
-	 * that moved the client request to permanent storage. These port numbers act as
-	 * a ACK message for the GO message for the server requesting to sync.
+	 * Method to request other servers to move the client request to permanent
+	 * storage. These port numbers act as a ACK message for the GO message for the
+	 * server requesting to sync.
 	 * 
-	 * @param currentPort is the port number of the server requesting to commit
-	 * @param message     is the client message
-	 * @return the list of port numbers of the server that succesfully committed.
+	 * @param currentPort
+	 * @param userName
+	 * @param firstName
+	 * @param lastName
+	 * @return
 	 */
 	public static List<Integer> proceedToCommitUser(int currentPort, String userName, String firstName,
 			String lastName) {

@@ -3,7 +3,7 @@ import java.sql.Date;
 
 /**
  * 
- * POJO for transaction
+ * POJO for Account
  *
  */
 public class Account implements Serializable{

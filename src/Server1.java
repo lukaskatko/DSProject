@@ -6,7 +6,10 @@ import java.util.Map;
 
 /**
  * Java RMI server, creating the local host server on port 8001 with name
- * Server1.
+ * Server1. Server on startup retrieves the list of records on its database
+ * instance and compares against the records on the next available instance.
+ * Records that are missing on not up to data are gathered in a list and synced
+ * with it DB instance.
  * 
  *
  */

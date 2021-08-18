@@ -48,65 +48,77 @@ public class Util {
 		return map;
 	}
 
+	/**
+	 * Get the instance of the next available server. This server instance is then
+	 * used to retrieve and compares the records from the table.
+	 * 
+	 * @param currentPort, port of the server
+	 * @return AccountDao instance.
+	 */
 	public AccountDao getActiveServer(int currentPort) {
 		Util util = new Util();
 		AccountDao stub = null;
 		Map<String, String> serverMap = util.getPropValue();
-		for(String entry: serverMap.keySet())
-		{
+		for (String entry : serverMap.keySet()) {
 			final int port = Integer.parseInt(serverMap.get(entry));
 			if (port != currentPort)
-			
-			try {
-				Registry registry = LocateRegistry.getRegistry(port);
-				stub = (AccountDao) registry.lookup(entry);
-				return stub;
-			} catch (Exception e) {
-				System.out.println("Exception get the instance of server " + entry);
-				e.printStackTrace();
-				continue;
-			}
+
+				try {
+					Registry registry = LocateRegistry.getRegistry(port);
+					stub = (AccountDao) registry.lookup(entry);
+					return stub;
+				} catch (Exception e) {
+					System.out.println("Exception get the instance of server " + entry);
+					e.printStackTrace();
+					continue;
+				}
 		}
 		return null;
 
 	}
-	
+
+	/**
+	 * Method to compare the database records from two different database instance
+	 * and fetch the missing and latest records from the other server instance. This
+	 * list is then updated to the table.
+	 * 
+	 * @param sourceList
+	 * @param otherList
+	 * @return updated list
+	 */
 	public List<Account> getUpdatedRecords(Map<Long, Account> sourceList, Map<Long, Account> otherList) {
-		List<Account> finalList = new ArrayList<Account> ();
+		List<Account> finalList = new ArrayList<Account>();
 		if (sourceList.size() >= otherList.size()) {
-			for(Long entry: sourceList.keySet())
-			{
+			for (Long entry : sourceList.keySet()) {
 				Account other = otherList.get(entry);
 				if (other != null) {
 					Account source = sourceList.get(entry);
-					if(other.getCreateDate().compareTo(source.getCreateDate()) > 0 ) {
+					if (other.getCreateDate().compareTo(source.getCreateDate()) > 0) {
 						finalList.add(other);
 					}
 				}
-			
+
 			}
-		} 
+		}
 		if (otherList.size() > sourceList.size()) {
-			for(Long entry: otherList.keySet())
-			{
-				Account source = sourceList.get(entry);				
-				if (source == null) {		
+			for (Long entry : otherList.keySet()) {
+				Account source = sourceList.get(entry);
+				if (source == null) {
 					Account temp = otherList.get(entry);
 					temp.setFlag(true);
 					finalList.add(temp);
 				}
-			
+
 			}
-			for(Long entry: sourceList.keySet())
-			{
+			for (Long entry : sourceList.keySet()) {
 				Account other = otherList.get(entry);
 				if (other != null) {
 					Account source = sourceList.get(entry);
-					if(other.getCreateDate().compareTo(source.getCreateDate()) > 0 ) {
+					if (other.getCreateDate().compareTo(source.getCreateDate()) > 0) {
 						finalList.add(other);
 					}
 				}
-			
+
 			}
 		}
 		return finalList;
