@@ -58,7 +58,7 @@ public class Client {
 				String userName = sc.nextLine();
 				long accountNumber = accountDao.createUser(firstName, lastName, userName);
 				if (accountNumber == 0) {
-					System.out.println("Server Error, could not create new account.");
+					System.out.println("Could not create new account, please try again with a different username.");
 				} else {
 					System.out.println("Account number created is " + accountNumber);
 				}

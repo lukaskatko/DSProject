@@ -75,8 +75,9 @@ public class AccountDaoImpl extends UnicastRemoteObject implements AccountDao {
 		} else {
 			bal = account.getBalance().doubleValue() - balance;
 		}
+	
 		if (bal < 0.0)
-			throw new RemoteException("Insufficient balance to with draw the requested amount " + balance);
+			return false;
 		try {
 			PreparedStatement ps = connection.prepareStatement(
 					"Update cs6650_" + number + ".account SET balance = ?, update_date =? where account_number = ?");
