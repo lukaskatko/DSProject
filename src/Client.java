@@ -26,7 +26,7 @@ public class Client {
 		Util util = new Util();
 		Map<String, String> serverDetails = util.getPropValue();
 		String serverPort = serverDetails.get(serverName);
-		System.out.println(serverPort);
+		
 		Menu menu = new Menu();
 		System.out.println(menu.menu());
 		Registry serverRegistry = LocateRegistry.getRegistry("localhost", Integer.parseInt(serverPort));
@@ -105,9 +105,13 @@ public class Client {
 						System.out.println("Please enter a valid $$ amount in $$.$$ format.");
 					}
 				}
+				try {
 
 				double balance = accountDao.withDraw(accountNumber, userName, withdrawAmount);
 				System.out.println("Withdraw was " + (balance > 0.0 ? "Successful" : "Unsuccessful"));
+			} catch (Exception e) {System.out.println("Unsuccessfull");
+		
+			}
 			}
 			if (command == 4) {
 				input = "";
