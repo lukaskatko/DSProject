@@ -1,3 +1,10 @@
+Group 4
+Andrew Litzerman
+Rishabh Dutta
+Arun Joel John
+Tim-Lukas Katko
+
+
 -----README------
 
 MySQL Workbench is required. To begin, start SQL Workkbench. 
